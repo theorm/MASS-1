@@ -133,7 +133,7 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         return TransformerMASSModel(encoder, decoder)
 
     def max_positions(self):
-        return min(self.encoder.max_positions(), self.decoder.max_positions())
+        return self.encoder.max_positions(), self.decoder.max_positions()
 
     def forward(self, src_tokens=None, src_lengths=None, prev_output_tokens=None, **kwargs):
         """
@@ -471,7 +471,7 @@ class TransformerEncoder(FairseqEncoder):
         """Maximum input length supported by the encoder."""
         if self.embed_positions is None:
             return self.max_source_positions
-        return min(self.max_source_positions, self.embed_positions.max_positions())
+        return self.max_source_positions, self.embed_positions.max_positions()
 
 
 class TransformerDecoder(FairseqIncrementalDecoder):
@@ -597,7 +597,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         """Maximum output length supported by the decoder."""
         if self.embed_positions is None:
             return self.max_target_positions
-        return min(self.max_target_positions, self.embed_positions.max_positions())
+        return self.max_target_positions, self.embed_positions.max_positions()
 
     def buffered_future_mask(self, tensor):
         dim = tensor.size(0)
